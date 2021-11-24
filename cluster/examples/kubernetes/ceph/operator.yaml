@@ -27,7 +27,7 @@ data:
 
   # Enable the CSI driver.
   # To run the non-default version of the CSI driver, see the override-able image properties in operator.yaml
-  ROOK_CSI_ENABLE_CEPHFS: "true"
+  ROOK_CSI_ENABLE_CEPHFS: "false"
   # Enable the default version of the CSI RBD driver. To start another version of the CSI driver, see image properties below.
   ROOK_CSI_ENABLE_RBD: "true"
   ROOK_CSI_ENABLE_GRPC_METRICS: "false"
@@ -60,7 +60,7 @@ data:
   # If you disable the kernel client, your application may be disrupted during upgrade.
   # See the upgrade guide: https://rook.io/docs/rook/master/ceph-upgrade.html
   # NOTE! cephfs quota is not supported in kernel version < 4.17
-  CSI_FORCE_CEPHFS_KERNEL_CLIENT: "true"
+  CSI_FORCE_CEPHFS_KERNEL_CLIENT: "false"
 
   # (Optional) policy for modifying a volume's ownership or permissions when the RBD PVC is being mounted.
   # supported values are documented at https://kubernetes-csi.github.io/docs/support-fsgroup.html
@@ -75,12 +75,12 @@ data:
   # The default version of CSI supported by Rook will be started. To change the version
   # of the CSI driver to something other than what is officially supported, change
   # these images to the desired release of the CSI driver.
-  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.4.0"
-  # ROOK_CSI_REGISTRAR_IMAGE: "k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.3.0"
-  # ROOK_CSI_RESIZER_IMAGE: "k8s.gcr.io/sig-storage/csi-resizer:v1.3.0"
-  # ROOK_CSI_PROVISIONER_IMAGE: "k8s.gcr.io/sig-storage/csi-provisioner:v3.0.0"
-  # ROOK_CSI_SNAPSHOTTER_IMAGE: "k8s.gcr.io/sig-storage/csi-snapshotter:v4.2.0"
-  # ROOK_CSI_ATTACHER_IMAGE: "k8s.gcr.io/sig-storage/csi-attacher:v3.3.0"
+  ROOK_CSI_CEPH_IMAGE: "registry.cn-shanghai.aliyuncs.com/k8s-rook/cephcsi:v3.4.0"
+  ROOK_CSI_REGISTRAR_IMAGE: "registry.cn-shanghai.aliyuncs.com/k8s-gle/csi-node-driver-registrar:v2.2.0"
+  ROOK_CSI_RESIZER_IMAGE: "registry.cn-shanghai.aliyuncs.com/k8s-gle/csi-resizer:v1.2.0"
+  ROOK_CSI_PROVISIONER_IMAGE: "registry.cn-shanghai.aliyuncs.com/k8s-gle/csi-provisioner:v2.2.2"
+  ROOK_CSI_SNAPSHOTTER_IMAGE: "registry.cn-shanghai.aliyuncs.com/k8s-gle/csi-snapshotter:v4.1.1"
+  ROOK_CSI_ATTACHER_IMAGE: "registry.cn-shanghai.aliyuncs.com/k8s-gle/csi-attacher:v3.2.1"
 
   # (Optional) set user created priorityclassName for csi plugin pods.
   # CSI_PLUGIN_PRIORITY_CLASSNAME: "system-node-critical"
