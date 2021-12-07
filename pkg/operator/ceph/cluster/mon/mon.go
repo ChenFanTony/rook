@@ -79,7 +79,8 @@ const (
 
 	// DefaultMsgr1Port is the default port Ceph mons use to communicate amongst themselves prior
 	// to Ceph Nautilus.
-	DefaultMsgr1Port int32 = 6789
+	// change Port 6789 to 6790 to avoid conflict with anther host networking cluster.
+	DefaultMsgr1Port int32 = 6790
 	// DefaultMsgr2Port is the listening port of the messenger v2 protocol introduced in Ceph
 	// Nautilus. In Nautilus and a few Ceph releases after, Ceph can use both v1 and v2 protocols.
 	DefaultMsgr2Port int32 = 3300
