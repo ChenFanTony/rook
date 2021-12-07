@@ -95,6 +95,7 @@ func (c *cluster) reconcileCephDaemons(rookImage string, cephVersion cephver.Cep
 	if err != nil {
 		return errors.Wrap(err, "failed to populate config override config map")
 	}
+	c.ClusterInfo.SetName(c.namespacedName.Name)
 
 	// Start the mon pods
 	controller.UpdateCondition(c.context, c.namespacedName, cephv1.ConditionProgressing, v1.ConditionTrue, cephv1.ClusterProgressingReason, "Configuring Ceph Mons")
@@ -151,8 +152,7 @@ func (c *cluster) reconcileCephDaemons(rookImage string, cephVersion cephver.Cep
 
 	// If a stretch cluster, enable the arbiter after the OSDs are created with the CRUSH map
 	if c.Spec.IsStretchCluster() {
-		failingOver := false
-		if err := c.mons.ConfigureArbiter(failingOver); err != nil {
+		if err := c.mons.ConfigureArbiter(); err != nil {
 			return errors.Wrap(err, "failed to configure stretch arbiter")
 		}
 	}

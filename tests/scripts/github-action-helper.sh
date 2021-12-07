@@ -173,6 +173,11 @@ function validate_yaml() {
   kubectl create -f "${replication_url}/replication.storage.openshift.io_volumereplications.yaml"
   kubectl create -f "${replication_url}/replication.storage.openshift.io_volumereplicationclasses.yaml"
 
+  #create the KEDA CRDS
+  keda_version=2.4.0
+  keda_url="https://github.com/kedacore/keda/releases/download/v${keda_version}/keda-${keda_version}.yaml"
+  kubectl apply -f "${keda_url}"
+
   # skipping folders and some yamls that are only for openshift.
   manifests="$(find . -maxdepth 1 -type f -name '*.yaml' -and -not -name '*openshift*' -and -not -name 'scc.yaml')"
   with_f_arg="$(echo "$manifests" | awk '{printf " -f %s",$1}')" # don't add newline
@@ -185,7 +190,7 @@ function create_cluster_prerequisites() {
 }
 
 function deploy_manifest_with_local_build() {
-  sed -i "s|image: rook/ceph:v1.7.7|image: rook/ceph:local-build|g" $1
+  sed -i "s|image: rook/ceph:v1.7.9|image: rook/ceph:local-build|g" $1
   kubectl create -f $1
 }
 
