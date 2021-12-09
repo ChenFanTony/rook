@@ -6,7 +6,7 @@ metadata:
   labels:
     app: rook-ceph-tools
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: rook-ceph-tools
@@ -22,6 +22,10 @@ spec:
           command: ["/tini"]
           args: ["-g", "--", "/usr/local/bin/toolbox.sh"]
           imagePullPolicy: IfNotPresent
+          tty: true
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
           env:
             - name: ROOK_CEPH_USERNAME
               valueFrom:
