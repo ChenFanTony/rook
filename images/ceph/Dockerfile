@@ -19,7 +19,7 @@ ARG ARCH
 ARG TINI_VERSION
 
 # Run tini as PID 1 and avoid signal handling issues
-RUN curl --fail -sSL -o /tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH} && \
+RUN curl --fail -sSL -o /tini https://github.91chi.fun//https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH} && \
     chmod +x /tini
 
 COPY rook rookflex toolbox.sh set-ceph-debug-level /usr/local/bin/
