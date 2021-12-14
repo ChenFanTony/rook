@@ -83,7 +83,7 @@ const (
 	DefaultMsgr1Port int32 = 6790
 	// DefaultMsgr2Port is the listening port of the messenger v2 protocol introduced in Ceph
 	// Nautilus. In Nautilus and a few Ceph releases after, Ceph can use both v1 and v2 protocols.
-	DefaultMsgr2Port int32 = 3300
+	DefaultMsgr2Port int32 = 3301
 
 	// minimum amount of memory in MB to run the pod
 	cephMonPodMinimumMemory uint64 = 1024
