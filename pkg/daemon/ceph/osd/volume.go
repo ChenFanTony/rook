@@ -553,7 +553,8 @@ func (a *OsdAgent) initializeDevices(context *clusterd.Context, devices *DeviceO
 		// which reports only the phantom partitions (and malformed OSD info) when they exist and
 		// ignores the original (correct) OSDs created on the raw disk.
 		// See: https://github.com/rook/rook/issues/7940
-		if device.DeviceInfo.Type != sys.DiskType && allowRawMode {
+		// NOTE: Here we revert to use raw mode by default, Atari is disabled in our environment.
+		if allowRawMode {
 			rawDevices.Entries[name] = device
 			continue
 		}

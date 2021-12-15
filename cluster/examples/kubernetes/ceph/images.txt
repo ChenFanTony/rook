@@ -5,5 +5,5 @@
  k8s.gcr.io/sig-storage/csi-snapshotter:v4.2.0
  quay.io/cephcsi/cephcsi:v3.4.0
  quay.io/csiaddons/volumereplication-operator:v0.1.0
- registry.cn-shanghai.aliyuncs.com/k8s-rook/ceph:v14.2.22
+ registry.cn-shanghai.aliyuncs.com/k8s-rook/ceph:v14.2.22-1
  rook/ceph:v1.7.8
