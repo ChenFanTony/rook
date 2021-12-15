@@ -18,6 +18,9 @@ FROM BASEIMAGE
 ARG ARCH
 ARG TINI_VERSION
 
+# install for raw scripts
+RUN yum install python3 -y
+
 # Run tini as PID 1 and avoid signal handling issues
 RUN curl --fail -sSL -o /tini https://github.91chi.fun//https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH} && \
     chmod +x /tini
