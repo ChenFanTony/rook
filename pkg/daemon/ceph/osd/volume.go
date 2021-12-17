@@ -579,6 +579,7 @@ func (a *OsdAgent) initializeDevicesRawMode(context *clusterd.Context, devices *
 	cephVolumeMode := "raw"
 	baseArgs := []string{"-oL", cephVolumeCmd, cephVolumeMode, "prepare", "--bluestore"}
 
+	metadataDevices := make(map[string]map[string]string)
 	for name, device := range devices.Entries {
 		deviceArg := path.Join("/dev", name)
 		if device.Data == -1 {
@@ -588,6 +589,38 @@ func (a *OsdAgent) initializeDevicesRawMode(context *clusterd.Context, devices *
 				"--data",
 				deviceArg,
 			}...)
+
+			// MetadataDevice is used for check if using split partitons
+			// such as block_db, block_wal
+			if a.metadataDevice != "" || device.Config.MetadataDevice != "" {
+				md := a.metadataDevice
+				if device.Config.MetadataDevice != "" {
+					md = device.Config.MetadataDevice
+				}
+				if _, ok := metadataDevices[md]; ok {
+					return errors.Errorf("metadataDevice (%s) has more than one osd on raw mode", md)
+				} else {
+					metadataDevices[md] = make(map[string]string)
+					if device.Config.DeviceClass != "" {
+						metadataDevices[md]["deviceclass"] = device.Config.DeviceClass
+					}
+					metadataDevices[md]["devices"] = deviceArg
+				}
+				if device.Config.BlockDBDevice != "" {
+					metadataDevices[md]["BlockDBDevice"] = device.Config.BlockDBDevice
+					immediateExecuteArgs = append(immediateExecuteArgs, []string{
+						"--block.db",
+						metadataDevices[md]["BlockDBDevice"],
+					}...)
+				}
+				if device.Config.BlockWalDevice != "" {
+					metadataDevices[md]["BlockWalDevice"] = device.Config.BlockWalDevice
+					immediateExecuteArgs = append(immediateExecuteArgs, []string{
+						"--block.wal",
+						metadataDevices[md]["BlockWalDevice"],
+					}...)
+				}
+			}
 
 			// assign the device class specific to the device
 			immediateExecuteArgs = a.appendDeviceClassArg(device, immediateExecuteArgs)

@@ -47,6 +47,8 @@ type DesiredDevice struct {
 	InitialWeight      string
 	IsFilter           bool
 	IsDevicePathFilter bool
+	BlockDBDevice      string
+	BlockWalDevice     string
 }
 
 // DeviceOsdMapping represents the mapping of an OSD on disk

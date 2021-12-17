@@ -24,6 +24,8 @@ import (
 const (
 	WalSizeMBKey       = "walSizeMB"
 	DatabaseSizeMBKey  = "databaseSizeMB"
+	BlockDBDeviceKey   = "blockDBDevice"
+	BlockWalDeviceKey  = "blockWalDevice"
 	JournalSizeMBKey   = "journalSizeMB"
 	OSDsPerDeviceKey   = "osdsPerDevice"
 	EncryptedDeviceKey = "encryptedDevice"
@@ -40,6 +42,8 @@ type StoreConfig struct {
 	OSDsPerDevice   int    `json:"osdsPerDevice,omitempty"`
 	EncryptedDevice bool   `json:"encryptedDevice,omitempty"`
 	MetadataDevice  string `json:"metadataDevice,omitempty"`
+	BlockDBDevice   string `json:"blockDBDevice,omitempty"`
+	BlockWalDevice  string `json:"blockWalDevice,omitempty"`
 	DeviceClass     string `json:"deviceClass,omitempty"`
 	InitialWeight   string `json:"initialWeight,omitempty"`
 	PrimaryAffinity string `json:"primaryAffinity,omitempty"`
@@ -70,6 +74,10 @@ func ToStoreConfig(config map[string]string) StoreConfig {
 			storeConfig.EncryptedDevice = (v == "true")
 		case MetadataDeviceKey:
 			storeConfig.MetadataDevice = v
+		case BlockDBDeviceKey:
+			storeConfig.BlockDBDevice = v
+		case BlockWalDeviceKey:
+			storeConfig.BlockWalDevice = v
 		case DeviceClassKey:
 			storeConfig.DeviceClass = v
 		case InitialWeightKey:

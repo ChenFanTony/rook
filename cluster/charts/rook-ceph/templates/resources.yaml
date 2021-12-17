@@ -9375,6 +9375,10 @@ spec:
                         properties:
                           metadataDevice:
                             type: string
+                          BlockDBDevice:
+                            type: string
+                          BlockWalDevice:
+                            type: string
                           storeType:
                             type: string
                             pattern: ^(bluestore)$
