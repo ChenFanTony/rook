@@ -607,17 +607,17 @@ func (a *OsdAgent) initializeDevicesRawMode(context *clusterd.Context, devices *
 					metadataDevices[md]["devices"] = deviceArg
 				}
 				if device.Config.BlockDBDevice != "" {
-					metadataDevices[md]["BlockDBDevice"] = device.Config.BlockDBDevice
+					dbArg := path.Join("/dev", device.Config.BlockDBDevice)
 					immediateExecuteArgs = append(immediateExecuteArgs, []string{
 						"--block.db",
-						metadataDevices[md]["BlockDBDevice"],
+						dbArg,
 					}...)
 				}
 				if device.Config.BlockWalDevice != "" {
-					metadataDevices[md]["BlockWalDevice"] = device.Config.BlockWalDevice
+					walArg := path.Join("/dev", device.Config.BlockWalDevice)
 					immediateExecuteArgs = append(immediateExecuteArgs, []string{
 						"--block.wal",
-						metadataDevices[md]["BlockWalDevice"],
+						walArg,
 					}...)
 				}
 			}

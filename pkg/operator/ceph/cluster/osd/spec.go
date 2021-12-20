@@ -141,7 +141,7 @@ sys.exit('no disk found with OSD ID $OSD_ID')
 	[[ -z "$DEVICE" ]] && { echo "no device" ; exit 1 ; }
 
 	# ceph-volume raw mode only supports bluestore so we don't need to pass a store flag
-	ceph-volume raw activate --device "$DEVICE" "OSD_STORE_FLAG" --no-systemd --no-tmpfs
+	ceph-volume raw activate --device "$DEVICE" "$OSD_STORE_FLAG" --no-systemd --no-tmpfs
 fi
 `
 
