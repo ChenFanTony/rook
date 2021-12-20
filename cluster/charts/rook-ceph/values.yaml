@@ -4,8 +4,8 @@
 
 image:
   prefix: rook
-  repository: rook/ceph
-  tag: VERSION
+  repository: registry.cn-shanghai.aliyuncs.com/k8s-rook/ceph
+  tag: v14.2.22-1
   pullPolicy: IfNotPresent
 
 crds:

@@ -62,11 +62,11 @@ spec:
   hostNetwork: true
   hostPorts:
     # Ceph messenger protocol v1
-    - min: 6789
-      max: 6790 # <- support old default port
+    - min: 6790
+      max: 6795 # <- support old default port
     # Ceph messenger protocol v2
-    - min: 3300
-      max: 3300
+    - min: 3301
+      max: 3305
     # Ceph RADOS ports for OSDs, MDSes
     - min: 6800
       max: 7300
@@ -77,6 +77,6 @@ spec:
     - min: 8443
       max: 8443
     # Ceph mgr Prometheus Metrics
-    - min: 9283
-      max: 9283
+    - min: 9284
+      max: 9285
 {{- end }}
