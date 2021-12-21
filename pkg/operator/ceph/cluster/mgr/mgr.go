@@ -63,7 +63,7 @@ const (
 	// minimum amount of memory in MB to run the pod
 	cephMgrPodMinimumMemory uint64 = 512
 	// DefaultMetricsPort prometheus exporter port
-	DefaultMetricsPort uint16 = 9283
+	DefaultMetricsPort uint16 = 9284
 )
 
 // Cluster represents the Rook and environment configuration settings needed to set up Ceph mgrs.
