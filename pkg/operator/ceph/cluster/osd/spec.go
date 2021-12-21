@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 	cephv1 "github.com/rook/rook/pkg/apis/ceph.rook.io/v1"
 	kms "github.com/rook/rook/pkg/daemon/ceph/osd/kms"
+	osdconfig "github.com/rook/rook/pkg/operator/ceph/cluster/osd/config"
 	opconfig "github.com/rook/rook/pkg/operator/ceph/config"
 	cephkey "github.com/rook/rook/pkg/operator/ceph/config/keyring"
 	"github.com/rook/rook/pkg/operator/ceph/controller"
@@ -142,7 +143,7 @@ sys.exit('no disk found with OSD ID $OSD_ID')
 
 	# ceph-volume raw mode only supports bluestore so we don't need to pass a store flag
 	OSD_STORE_FLAG=$(echo $OSD_STORE_FLAG | sed -e "s/--bluestore//g")
-	ceph-volume raw activate --device "$DEVICE" "$OSD_STORE_FLAG" --no-systemd --no-tmpfs
+	$(ceph-volume raw activate --device "$DEVICE" "$OSD_STORE_FLAG" --no-systemd --no-tmpfs)
 fi
 `
 
@@ -840,10 +841,42 @@ func (c *Cluster) getActivateOSDInitContainer(configDir, namespace, osdID string
 		volMounts = append(volMounts, getPvcOSDBridgeMount(osdProps.pvc.ClaimName))
 	}
 
-	if osdProps.storeConfig.BlockDBDevice != "" {
+	foundBlockDB := false
+	foundBlockWal := false
+	if len(osdProps.devices) > 0 {
+		for _, device := range osdProps.devices {
+			id := path.Join("/dev", device.Name)
+			if device.FullPath != "" {
+				id = device.FullPath
+			}
+			if osdInfo.BlockPath != id {
+				continue
+			}
+			osdStoreConfig := osdconfig.ToStoreConfig(device.Config)
+			if osdStoreConfig.BlockDBDevice != "" {
+				osdStore += "--block.db " + path.Join("/dev", osdStoreConfig.BlockDBDevice) + " "
+				foundBlockDB = true
+			} else {
+				if osdProps.storeConfig.BlockDBDevice != "" {
+					osdStore += "--block.db " + osdProps.storeConfig.BlockDBDevice + " "
+				}
+			}
+			if osdStoreConfig.BlockDBDevice != "" {
+				osdStore += "--block.wal " + path.Join("/dev", osdStoreConfig.BlockWalDevice) + " "
+				foundBlockWal = true
+			} else {
+				if osdProps.storeConfig.BlockDBDevice != "" {
+					osdStore += "--block.wal " + osdProps.storeConfig.BlockWalDevice + " "
+				}
+			}
+		}
+	}
+
+	if foundBlockDB && osdProps.storeConfig.BlockDBDevice != "" {
 		osdStore += "--block.db " + osdProps.storeConfig.BlockDBDevice + " "
 	}
-	if osdProps.storeConfig.BlockDBDevice != "" {
+
+	if foundBlockWal && osdProps.storeConfig.BlockDBDevice != "" {
 		osdStore += "--block.wal " + osdProps.storeConfig.BlockWalDevice + " "
 	}
 
