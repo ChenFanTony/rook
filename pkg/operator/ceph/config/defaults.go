@@ -37,6 +37,19 @@ func DefaultFlags(fsid, mountedKeyringPath string) []string {
 	return flags
 }
 
+func DefaultFlagsWithCephVersion(fsid, mountedKeyringPath string, cephVersion version.CephVersion) []string {
+	flags := []string{
+		// fsid unnecessary but is a safety to make sure daemons can only connect to their cluster
+		NewFlag("fsid", fsid),
+		NewFlag("keyring", mountedKeyringPath),
+	}
+
+	flags = append(flags, LoggingFlagsWithCephVersion(cephVersion)...)
+	flags = append(flags, StoredMonHostEnvVarFlags()...)
+
+	return flags
+}
+
 // makes it possible to be slightly less verbose to create a ConfigOverride here
 func configOverride(who, option, value string) Option {
 	return Option{Who: who, Option: option, Value: value}
