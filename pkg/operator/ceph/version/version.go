@@ -40,7 +40,10 @@ const (
 
 var (
 	// Minimum supported version is 14.2.5
-	Minimum = CephVersion{14, 2, 5, 0, ""}
+	// change to 12.2.12
+	Minimum = CephVersion{12, 2, 12, 0, ""}
+	// Luminous Ceph version
+	Luminous = CephVersion{12, 0, 0, 0, ""}
 	// Nautilus Ceph version
 	Nautilus = CephVersion{14, 0, 0, 0, ""}
 	// Octopus Ceph version
@@ -54,7 +57,7 @@ var (
 	cephVolumeLVMDiskSortingCephVersion = CephVersion{Major: 14, Minor: 2, Extra: 13}
 
 	// supportedVersions are production-ready versions that rook supports
-	supportedVersions = []CephVersion{Nautilus, Octopus, Pacific}
+	supportedVersions = []CephVersion{Luminous, Nautilus, Octopus, Pacific}
 
 	// unsupportedVersions are possibly Ceph pin-point release that introduced breaking changes and not recommended
 	unsupportedVersions = []CephVersion{cephVolumeLVMDiskSortingCephVersion}
@@ -96,6 +99,8 @@ func (v *CephVersion) ReleaseName() string {
 		return "pacific"
 	case Quincy.Major:
 		return "quincy"
+	case Luminous.Major:
+		return "luminous"
 	default:
 		return unknownVersionString
 	}

@@ -510,7 +510,7 @@ func (c *Cluster) makeDeployment(osdProps osdProperties, osd OSDInfo, provisionC
 		volumeMounts = append(volumeMounts, activateOSDContainer.VolumeMounts[0])
 	}
 
-	args = append(args, opconfig.LoggingFlags()...)
+	args = append(args, opconfig.LoggingFlagsWithCephVersion(c.clusterInfo.CephVersion)...)
 	args = append(args, osdOnSDNFlag(c.spec.Network)...)
 	args = append(args, controller.NetworkBindingFlags(c.clusterInfo, &c.spec)...)
 

@@ -55,6 +55,25 @@ func LoggingFlags() []string {
 	}
 }
 
+func LoggingFlagsWithCephVersion(cephVersion version.CephVersion) []string {
+	flags := []string{
+		// For containers, we're expected to log everything to stderr
+		NewFlag("log-to-stderr", "true"),
+		NewFlag("err-to-stderr", "true"),
+		NewFlag("mon-cluster-log-to-stderr", "true"),
+		// differentiate debug text from audit text, and the space after 'debug' is critical
+		NewFlag("log-stderr-prefix", "debug "),
+	}
+
+	if cephVersion.IsAtLeastNautilus() {
+		flags = append(flags, []string{
+			NewFlag("default-log-to-file", "false"),
+			NewFlag("default-mon-cluster-log-to-file", "false"),
+		}...)
+	}
+	return flags
+}
+
 // DefaultCentralizedConfigs returns the default configuration options Rook will set in Ceph's
 // centralized config store.
 func DefaultCentralizedConfigs(cephVersion version.CephVersion) []Option {
