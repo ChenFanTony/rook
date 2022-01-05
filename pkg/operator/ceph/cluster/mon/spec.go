@@ -246,6 +246,14 @@ func (c *Cluster) makeChownInitContainer(monConfig *monConfig) corev1.Container 
 }
 
 func (c *Cluster) makeMonFSInitContainer(monConfig *monConfig) corev1.Container {
+	publicAddr := monConfig.PublicIP
+
+	if c.spec.Network.IsHost() && !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
+		logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
+			monConfig.DaemonName, DefaultMsgr1Port)
+		publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultMsgr1Port)
+	}
+
 	return corev1.Container{
 		Name: "init-mon-fs",
 		Command: []string{
@@ -255,7 +263,7 @@ func (c *Cluster) makeMonFSInitContainer(monConfig *monConfig) corev1.Container 
 			controller.DaemonFlags(c.ClusterInfo, &c.spec, monConfig.DaemonName),
 			// needed so we can generate an initial monmap
 			// otherwise the mkfs will say: "0  no local addrs match monmap"
-			config.NewFlag("public-addr", monConfig.PublicIP),
+			config.NewFlag("public-addr", publicAddr),
 			"--mkfs",
 		),
 		Image:           c.spec.CephVersion.Image,
