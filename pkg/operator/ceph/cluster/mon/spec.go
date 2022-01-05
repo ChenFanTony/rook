@@ -281,10 +281,16 @@ func (c *Cluster) makeMonDaemonContainer(monConfig *monConfig) corev1.Container 
 
 	// Handle the non-default port for host networking. If host networking is not being used,
 	// the service created elsewhere will handle the non-default port redirection to the default port inside the container.
-	if c.spec.Network.IsHost() && monConfig.Port != DefaultMsgr1Port {
-		logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
-			monConfig.DaemonName, monConfig.Port)
-		publicAddr = fmt.Sprintf("%s:%d", publicAddr, monConfig.Port)
+	if c.spec.Network.IsHost() {
+		if monConfig.Port != DefaultMsgr1Port {
+			logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
+				monConfig.DaemonName, monConfig.Port)
+			publicAddr = fmt.Sprintf("%s:%d", publicAddr, monConfig.Port)
+		} else if !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
+			logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
+				monConfig.DaemonName, DefaultMsgr1Port)
+			publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultMsgr1Port)
+		}
 	}
 
 	container := corev1.Container{
