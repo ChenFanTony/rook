@@ -98,7 +98,7 @@ func cephCSIKeyringCephFSNodeCaps() []string {
 	return []string{
 		"mon", "allow r",
 		"mgr", "allow rw",
-		"osd", "allow rw tag cephfs *=*",
+		"osd", "allow rw",
 		"mds", "allow rw",
 	}
 }
@@ -107,7 +107,7 @@ func cephCSIKeyringCephFSProvisionerCaps() []string {
 	return []string{
 		"mon", "allow r",
 		"mgr", "allow rw",
-		"osd", "allow rw tag cephfs metadata=*",
+		"osd", "allow rw",
 	}
 }
 
