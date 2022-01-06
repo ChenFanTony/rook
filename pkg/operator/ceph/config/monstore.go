@@ -72,8 +72,15 @@ func (m *MonStore) SetIfChanged(who, option, value string) (bool, error) {
 // Set sets a config in the centralized mon configuration database.
 // https://docs.ceph.com/docs/master/rados/configuration/ceph-conf/#monitor-configuration-database
 func (m *MonStore) Set(who, option, value string) error {
+	var args []string
+
 	logger.Infof("setting %q=%q=%q option to the mon configuration database", who, option, value)
-	args := []string{"config", "set", who, normalizeKey(option), value}
+
+	if m.clusterInfo.CephVersion.IsAtLeastNautilus() {
+		args = append(args, "config", "set", who, normalizeKey(option), value)
+	} else {
+		args = append(args, "config-key", "set", normalizeKey(option), value)
+	}
 	cephCmd := client.NewCephCommand(m.context, m.clusterInfo, args)
 	out, err := cephCmd.RunWithTimeout(exec.CephCommandsTimeout)
 	if err != nil {
@@ -87,8 +94,15 @@ func (m *MonStore) Set(who, option, value string) error {
 
 // Delete a config in the centralized mon configuration database.
 func (m *MonStore) Delete(who, option string) error {
+	var args []string
+
 	logger.Infof("deleting %q option from the mon configuration database", option)
-	args := []string{"config", "rm", who, normalizeKey(option)}
+
+	if m.clusterInfo.CephVersion.IsAtLeastNautilus() {
+		args = append(args, "config", "rm", who, normalizeKey(option))
+	} else {
+		args = append(args, "config-key", "rm", normalizeKey(option))
+	}
 	cephCmd := client.NewCephCommand(m.context, m.clusterInfo, args)
 	out, err := cephCmd.RunWithTimeout(exec.CephCommandsTimeout)
 	if err != nil {
