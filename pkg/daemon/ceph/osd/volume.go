@@ -54,7 +54,8 @@ var (
 	lvmConfPath   = "/etc/lvm/lvm.conf"
 	cvLogDir      = ""
 	// The "ceph-volume raw" command is available since Ceph 14.2.8 as well as partition support in ceph-volume
-	cephVolumeRawModeMinCephVersion = cephver.CephVersion{Major: 14, Minor: 2, Extra: 8}
+	// change to 12.2.12, because we want to use ceph-volume raw prepare and activate to build ceph L version disk.
+	cephVolumeRawModeMinCephVersion = cephver.CephVersion{Major: 12, Minor: 2, Extra: 12}
 	// The Ceph Nautilus to include a retry to acquire device lock
 	cephFlockFixNautilusMinCephVersion = cephver.CephVersion{Major: 14, Minor: 2, Extra: 14}
 	// The Ceph Octopus to include a retry to acquire device lock
