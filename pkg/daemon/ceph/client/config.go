@@ -194,7 +194,7 @@ func CreateDefaultCephConfig(context *clusterd.Context, clusterInfo *ClusterInfo
 
 	// extract a list of just the monitor names, which will populate the "mon initial members"
 	// and "mon hosts" global config field
-	monMembers, monHosts := PopulateMonHostMembers(clusterInfo.Monitors)
+	monMembers, monHosts := PopulateMonHostMembersWithCephVersion(clusterInfo.Monitors, clusterInfo.CephVersion)
 
 	conf := &CephConfig{
 		GlobalConfig: &GlobalConfig{
@@ -273,6 +273,35 @@ func PopulateMonHostMembers(monitors map[string]*MonInfo) ([]string, []string) {
 		msgr1Endpoint := net.JoinHostPort(monIP, monPorts[1])
 
 		monHosts[i] = "[v2:" + msgr2Endpoint + ",v1:" + msgr1Endpoint + "]"
+		i++
+	}
+
+	return monMembers, monHosts
+}
+
+func PopulateMonHostMembersWithCephVersion(monitors map[string]*MonInfo, cephVersion cephver.CephVersion) ([]string, []string) {
+	monMembers := make([]string, len(monitors))
+	monHosts := make([]string, len(monitors))
+
+	i := 0
+	for _, monitor := range monitors {
+		monMembers[i] = monitor.Name
+		monIP := cephutil.GetIPFromEndpoint(monitor.Endpoint)
+
+		// This tries to detect the current port if the mon already exists
+		// This basically handles the transition between monitors running on 6790 to msgr2
+		// So whatever the previous monitor port was we keep it
+		currentMonPort := cephutil.GetPortFromEndpoint(monitor.Endpoint)
+
+		monPorts := [2]string{strconv.Itoa(int(Msgr2port)), strconv.Itoa(int(currentMonPort))}
+		msgr2Endpoint := net.JoinHostPort(monIP, monPorts[0])
+		msgr1Endpoint := net.JoinHostPort(monIP, monPorts[1])
+
+		if cephVersion.IsAtLeastNautilus() {
+			monHosts[i] = "[v2:" + msgr2Endpoint + ",v1:" + msgr1Endpoint + "]"
+		} else {
+			monHosts[i] = msgr1Endpoint
+		}
 		i++
 	}
 
