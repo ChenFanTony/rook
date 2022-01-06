@@ -559,8 +559,10 @@ func (c *cluster) postMonStartupActions() error {
 	}
 
 	// Enable Ceph messenger 2 protocol on Nautilus
-	if err := client.EnableMessenger2(c.context, c.ClusterInfo); err != nil {
-		return errors.Wrap(err, "failed to enable Ceph messenger version 2")
+	if c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
+		if err := client.EnableMessenger2(c.context, c.ClusterInfo); err != nil {
+			return errors.Wrap(err, "failed to enable Ceph messenger version 2")
+		}
 	}
 
 	crushRoot := client.GetCrushRootFromSpec(c.Spec)
