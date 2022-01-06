@@ -508,6 +508,11 @@ func (a *OsdAgent) useRawMode(context *clusterd.Context, pvcBacked bool) (bool, 
 		useRawMode = true
 	}
 
+	if a.clusterInfo.CephVersion.IsAtLeast(cephver.CephVersion{Major: 12, Minor: 2, Extra: 12}) {
+		logger.Debug("will use raw mode since cluster version is 12.2.12")
+		useRawMode = true
+	}
+
 	// ceph-volume raw mode does not support encryption yet
 	if a.storeConfig.EncryptedDevice {
 		logger.Debug("won't use raw mode since encryption is enabled")
