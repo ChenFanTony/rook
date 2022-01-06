@@ -302,7 +302,7 @@ func (c *Cluster) provisionOSDContainer(osdProps osdProperties, copyBinariesMoun
 		Command:      []string{path.Join(rookBinariesMountPath, "tini")},
 		Args:         []string{"--", path.Join(rookBinariesMountPath, "rook"), "ceph", "osd", "provision"},
 		Name:         "provision",
-		Image:        c.spec.CephVersion.Image,
+		Image:        c.rookVersion,
 		VolumeMounts: volumeMounts,
 		Env:          envVars,
 		SecurityContext: &v1.SecurityContext{

@@ -887,7 +887,7 @@ func (c *Cluster) getActivateOSDInitContainer(configDir, namespace, osdID string
 			fmt.Sprintf(activateOSDOnNodeCode, osdInfo.UUID, osdStore, osdInfo.CVMode, blockPathVarName),
 		},
 		Name:            "activate",
-		Image:           c.spec.CephVersion.Image,
+		Image:           c.rookVersion,
 		VolumeMounts:    volMounts,
 		SecurityContext: PrivilegedContext(),
 		Env:             envVars,
