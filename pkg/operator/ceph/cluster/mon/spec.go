@@ -250,8 +250,8 @@ func (c *Cluster) makeMonFSInitContainer(monConfig *monConfig) corev1.Container 
 
 	if c.spec.Network.IsHost() && !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
 		logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
-			monConfig.DaemonName, DefaultMsgr1Port)
-		publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultMsgr1Port)
+			monConfig.DaemonName, DefaultRookMsgr1Port)
+		publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr1Port)
 	}
 
 	return corev1.Container{
@@ -288,8 +288,8 @@ func (c *Cluster) makeMonDaemonContainer(monConfig *monConfig) corev1.Container 
 			publicAddr = fmt.Sprintf("%s:%d", publicAddr, monConfig.Port)
 		} else if !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
 			logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
-				monConfig.DaemonName, DefaultMsgr1Port)
-			publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultMsgr1Port)
+				monConfig.DaemonName, DefaultRookMsgr1Port)
+			publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr1Port)
 		}
 	}
 

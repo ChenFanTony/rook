@@ -80,10 +80,12 @@ const (
 	// DefaultMsgr1Port is the default port Ceph mons use to communicate amongst themselves prior
 	// to Ceph Nautilus.
 	// change Port 6789 to 6790 to avoid conflict with anther host networking cluster.
-	DefaultMsgr1Port int32 = 6790
+	DefaultMsgr1Port     int32 = 6789
+	DefaultRookMsgr1Port int32 = 6790
 	// DefaultMsgr2Port is the listening port of the messenger v2 protocol introduced in Ceph
 	// Nautilus. In Nautilus and a few Ceph releases after, Ceph can use both v1 and v2 protocols.
-	DefaultMsgr2Port int32 = 3301
+	DefaultMsgr2Port     int32 = 3300
+	DefaultRookMsgr2Port int32 = 3301
 
 	// minimum amount of memory in MB to run the pod
 	cephMonPodMinimumMemory uint64 = 1024
@@ -556,7 +558,7 @@ func (c *Cluster) newMonConfig(monID int, zone string) *monConfig {
 	return &monConfig{
 		ResourceName: resourceName(daemonName),
 		DaemonName:   daemonName,
-		Port:         DefaultMsgr1Port,
+		Port:         DefaultRookMsgr1Port,
 		Zone:         zone,
 		DataPathMap: config.NewStatefulDaemonDataPathMap(
 			c.spec.DataDirHostPath, dataDirRelativeHostPath(daemonName), config.MonType, daemonName, c.Namespace),

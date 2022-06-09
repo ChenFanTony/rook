@@ -43,7 +43,7 @@ func (c *Cluster) createService(mon *monConfig) (string, error) {
 					Port: mon.Port,
 					// --public-bind-addr=IP with no IP:port has the mon listen on port 6789
 					// regardless of what port the mon advertises (--public-addr) to the outside.
-					TargetPort: intstr.FromInt(int(DefaultMsgr1Port)),
+					TargetPort: intstr.FromInt(int(DefaultRookMsgr1Port)),
 					Protocol:   v1.ProtocolTCP,
 				},
 			},
@@ -56,7 +56,7 @@ func (c *Cluster) createService(mon *monConfig) (string, error) {
 	}
 
 	// If deploying Nautilus or newer we need a new port for the monitor service
-	addServicePort(svcDef, "tcp-msgr2", DefaultMsgr2Port)
+	addServicePort(svcDef, "tcp-msgr2", DefaultRookMsgr2Port)
 
 	// Set the ClusterIP if the service does not exist and we expect a certain cluster IP
 	// For example, in disaster recovery the service might have been deleted accidentally, but we have the

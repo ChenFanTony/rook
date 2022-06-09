@@ -27,6 +27,11 @@ func getNodeInfoFromNode(n v1.Node) (*MonScheduleInfo, error) {
 		Hostname: n.Labels[v1.LabelHostname],
 	}
 
+	if address, ok := n.Annotations["rook.io/public-ip"]; ok {
+		logger.Debugf("using annotations public IP %s for node %s", address, n.Name)
+		nr.Address = address
+	}
+
 	for _, ip := range n.Status.Addresses {
 		if ip.Type == v1.NodeInternalIP {
 			logger.Debugf("using internal IP %s for node %s", ip.Address, n.Name)
