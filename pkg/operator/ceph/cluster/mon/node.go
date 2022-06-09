@@ -32,11 +32,14 @@ func getNodeInfoFromNode(n v1.Node) (*MonScheduleInfo, error) {
 		nr.Address = address
 	}
 
-	for _, ip := range n.Status.Addresses {
-		if ip.Type == v1.NodeInternalIP {
-			logger.Debugf("using internal IP %s for node %s", ip.Address, n.Name)
-			nr.Address = ip.Address
-			break
+	// If no annotation IP found try to use an internal IP
+	if nr.Address == "" {
+		for _, ip := range n.Status.Addresses {
+			if ip.Type == v1.NodeInternalIP {
+				logger.Debugf("using internal IP %s for node %s", ip.Address, n.Name)
+				nr.Address = ip.Address
+				break
+			}
 		}
 	}
 
