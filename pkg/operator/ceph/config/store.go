@@ -37,7 +37,7 @@ const (
 	monHostKey           = "mon_host"
 	monInitialMembersKey = "mon_initial_members"
 	// Msgr2port is the listening port of the messenger v2 protocol
-	Msgr2port = 3300
+	Msgr2port = 3301
 )
 
 // Store manages storage of the Ceph config file shared by all daemons (if applicable) as well as an

@@ -46,7 +46,7 @@ const (
 	// DefaultKeyringFile is the default name of the file where Ceph stores its keyring info
 	DefaultKeyringFile = "keyring"
 	// Msgr2port is the listening port of the messenger v2 protocol
-	Msgr2port = 3300
+	Msgr2port = 3301
 )
 
 var (
