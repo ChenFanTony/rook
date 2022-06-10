@@ -248,10 +248,18 @@ func (c *Cluster) makeChownInitContainer(monConfig *monConfig) corev1.Container 
 func (c *Cluster) makeMonFSInitContainer(monConfig *monConfig) corev1.Container {
 	publicAddr := monConfig.PublicIP
 
-	if c.spec.Network.IsHost() && !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
-		logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
-			monConfig.DaemonName, DefaultRookMsgr1Port)
-		publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr1Port)
+	if c.spec.Network.IsHost() {
+		if monConfig.Port != DefaultMsgr1Port {
+			if !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
+				logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
+					monConfig.DaemonName, DefaultRookMsgr1Port)
+				publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr1Port)
+			} else {
+				logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
+					monConfig.DaemonName, monConfig.Port)
+				publicAddr = fmt.Sprintf("v2:%s:%d,v1:%s:%d", publicAddr, DefaultRookMsgr2Port, publicAddr, monConfig.Port)
+			}
+		}
 	}
 
 	return corev1.Container{
@@ -283,13 +291,15 @@ func (c *Cluster) makeMonDaemonContainer(monConfig *monConfig) corev1.Container 
 	// the service created elsewhere will handle the non-default port redirection to the default port inside the container.
 	if c.spec.Network.IsHost() {
 		if monConfig.Port != DefaultMsgr1Port {
-			logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
-				monConfig.DaemonName, monConfig.Port)
-			publicAddr = fmt.Sprintf("%s:%d", publicAddr, monConfig.Port)
-		} else if !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
-			logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
-				monConfig.DaemonName, DefaultRookMsgr1Port)
-			publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr1Port)
+			if !c.ClusterInfo.CephVersion.IsAtLeastNautilus() {
+				logger.Warningf("Starting mon %s with host networking on L ceph version, should specify the mon port to %d.",
+					monConfig.DaemonName, DefaultRookMsgr1Port)
+				publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr1Port)
+			} else {
+				logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
+					monConfig.DaemonName, monConfig.Port)
+				publicAddr = fmt.Sprintf("v2:%s:%d,v1:%s:%d", publicAddr, DefaultRookMsgr2Port, publicAddr, monConfig.Port)
+			}
 		}
 	}
 
