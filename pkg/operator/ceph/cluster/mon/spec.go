@@ -257,7 +257,7 @@ func (c *Cluster) makeMonFSInitContainer(monConfig *monConfig) corev1.Container 
 			} else {
 				logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
 					monConfig.DaemonName, monConfig.Port)
-				publicAddr = fmt.Sprintf("v2:%s:%d,v1:%s:%d", publicAddr, DefaultRookMsgr2Port, publicAddr, monConfig.Port)
+				publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr2Port)
 			}
 		}
 	}
@@ -298,7 +298,7 @@ func (c *Cluster) makeMonDaemonContainer(monConfig *monConfig) corev1.Container 
 			} else {
 				logger.Warningf("Starting mon %s with host networking on a non-default port %d. The mon must be failed over before enabling msgr2.",
 					monConfig.DaemonName, monConfig.Port)
-				publicAddr = fmt.Sprintf("v2:%s:%d,v1:%s:%d", publicAddr, DefaultRookMsgr2Port, publicAddr, monConfig.Port)
+				publicAddr = fmt.Sprintf("%s:%d", publicAddr, DefaultRookMsgr2Port)
 			}
 		}
 	}
