@@ -362,7 +362,7 @@ func (c *Cluster) makeMonDaemonContainer(monConfig *monConfig) corev1.Container 
 	}
 
 	// Add messenger 2 port
-	addContainerPort(container, "tcp-msgr2", 3300)
+	addContainerPort(container, "tcp-msgr2", 3301)
 
 	return container
 }
